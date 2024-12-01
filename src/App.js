@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { AuthProvider } from './context/AuthContext'; // Import the AuthProvider
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import StudentDashboard from "./pages/StudentDashboard";
@@ -8,6 +9,7 @@ import MakeSuggestion from './pages/MakeSuggestion';
 
 function App() {
   return (
+    <AuthProvider>
     <Router>
       <Routes>
         <Route path="/" element={<Login />} />
@@ -18,6 +20,7 @@ function App() {
         <Route path="/makesuggestion" element={<MakeSuggestion />} />
       </Routes>
     </Router>
+    </AuthProvider>
   );
 }
 
