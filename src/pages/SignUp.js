@@ -20,11 +20,17 @@ const SignUp = () => {
   const handleSignUp = async () => {
     try {
       const { email, password, ...userData } = formData;
+      // Create the user in Firebase Authentication
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      
+      // Include the userId (uid) and email in the document
       await setDoc(doc(db, "users", userCredential.user.uid), {
-        ...userData, // Includes userType, department, and other fields
+        ...userData, // Include other user data like firstName, lastName, etc.
+        email: email, // Explicitly store the email as a field
+        userId: userCredential.user.uid, // Explicitly store the userId as a field
         userType: formData.userType.toLowerCase(), // Ensure lowercase for consistency
       });
+  
       alert("SignUp Successful! Please log in.");
       navigate("/");
     } catch (error) {
@@ -32,6 +38,7 @@ const SignUp = () => {
       alert(error.message);
     }
   };
+  
 
   return (
     <div>
