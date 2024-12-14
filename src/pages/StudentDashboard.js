@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../index.css';
 import { useNavigate } from 'react-router-dom';
 import { auth, db } from '../firebase';
-import { collection, getDocs, query, where } from 'firebase/firestore';
-
+import { collection, query, where, onSnapshot, getDocs } from 'firebase/firestore';
 
 const StudentDashboard = ({ isSidebarCollapsed }) => {
   const [complaints, setComplaints] = useState([]);
@@ -19,14 +18,15 @@ const StudentDashboard = ({ isSidebarCollapsed }) => {
   const userId = auth?.currentUser?.uid;
   const navigate = useNavigate();
 
+  // Fetch user details
   useEffect(() => {
     if (!userId) return;
 
     const fetchUserDetails = async () => {
       const userRef = collection(db, 'users');
       const q = query(userRef, where('userId', '==', userId));
-      const querySnapshot = await getDocs(q);
 
+      const querySnapshot = await getDocs(q);
       querySnapshot.forEach((doc) => {
         const userData = doc.data();
         setUser({
@@ -44,22 +44,22 @@ const StudentDashboard = ({ isSidebarCollapsed }) => {
     fetchUserDetails();
   }, [userId]);
 
+  // Fetch complaints and listen for updates
   useEffect(() => {
     if (!userId) return;
 
-    const fetchUserComplaints = async () => {
-      const complaintsRef = collection(db, 'complaints');
-      const q = query(complaintsRef, where('userId', '==', userId));
-      const querySnapshot = await getDocs(q);
-
+    const unsubscribe = onSnapshot(collection(db, 'complaints'), (querySnapshot) => {
       const complaintsArray = [];
       querySnapshot.forEach((doc) => {
-        complaintsArray.push({ id: doc.id, ...doc.data() });
+        const complaintData = doc.data();
+        if (complaintData.userId === userId) {
+          complaintsArray.push({ id: doc.id, ...complaintData });
+        }
       });
       setComplaints(complaintsArray);
-    };
+    });
 
-    fetchUserComplaints();
+    return () => unsubscribe(); // Clean up the listener when the component unmounts
   }, [userId]);
 
   const handleFeedbackClick = (complaintId) => {
@@ -84,7 +84,12 @@ const StudentDashboard = ({ isSidebarCollapsed }) => {
 
         <div className="md:col-span-2">
           <h3 className="text-2xl font-semibold mb-4 text-gray-800">Your Complaints</h3>
-          {complaints.length > 0 ? (
+          {complaints.length === 0 ? (
+            <div className="text-center text-gray-600">
+              <p>No complaints yet.</p>
+              <p className="mt-2">Feel free to add your first complaint!</p>
+            </div>
+          ) : (
             complaints.map((complaint, index) => (
               <div
                 key={complaint.id}
@@ -117,23 +122,21 @@ const StudentDashboard = ({ isSidebarCollapsed }) => {
                 <div className="flex items-center">
                   <button
                     onClick={() => handleFeedbackClick(complaint.id)}
-                    className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+                    className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-all duration-300"
                   >
                     {selectedComplaint === complaint.id ? 'Hide Feedback' : 'Show Feedback'}
                   </button>
                 </div>
                 {selectedComplaint === complaint.id && (
-                  <div className="mt-4 p-4 bg-gray-100 rounded-lg">
+                  <div className="mt-4 p-4 bg-gray-100 rounded-lg border border-gray-300">
                     <p>
                       <strong>Feedback from Admin:</strong> 
-                      {complaint.adminFeedback || 'No feedback provided yet'}
+                      {complaint.feedback || 'No feedback provided yet'}
                     </p>
                   </div>
                 )}
               </div>
             ))
-          ) : (
-            <p className="text-gray-600">No complaints yet</p>
           )}
           <div className="mt-6 flex justify-center">
             <button

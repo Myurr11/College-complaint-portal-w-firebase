@@ -3,6 +3,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from "../firebase";
 import { useNavigate } from "react-router-dom";
+import './Login.css'; // Import the Tailwind-based CSS file
 
 const Login = () => {
   const [activeTab, setActiveTab] = useState("Student");
@@ -34,59 +35,49 @@ const Login = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen m-0 p-0">
-      <div className="bg-white p-10 rounded-lg shadow-lg w-full max-w-sm">
+    <div className="login-container">
+      <div className="login-form">
         {/* Tabs */}
-        <div className="flex mb-4 mt-4">
+        <div className="tabs">
           <button
             onClick={() => setActiveTab("Student")}
-            className={`w-1/2 py-2 text-center font-semibold rounded-t-md ${
-              activeTab === "Student"
-                ? "bg-dark-blue text-white border-b-4 border-dark-blue shadow-md"
-                : "bg-gray-200 text-gray-600"
-            }`}
+            className={`tab-button ${activeTab === "Student" ? "active" : "inactive"}`}
           >
             Student
           </button>
           <button
             onClick={() => setActiveTab("Admin")}
-            className={`w-1/2 py-2 text-center font-semibold rounded-t-md ${
-              activeTab === "Admin"
-                ? "bg-dark-blue text-white border-b-4 border-dark-blue shadow-md"
-                : "bg-gray-200 text-gray-600"
-            }`}
+            className={`tab-button ${activeTab === "Admin" ? "active" : "inactive"}`}
           >
             Admin
           </button>
         </div>
 
         {/* Login Form */}
-        <h2 className="text-2xl font-bold text-center text-dark-blue mb-4 mt-4">
-          Login Portal
-        </h2>
+        <h2 className="login-title">Login Portal</h2>
         <div className="space-y-3">
           <input
             type="email"
             placeholder="Enter your Email ID"
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-dark-blue"
+            className="input-field"
           />
           <input
             type="password"
             placeholder="Enter your password"
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-dark-blue"
+            className="input-field"
           />
           <button
             onClick={handleLogin}
-            className="w-full bg-dark-blue text-white py-2 rounded-md font-semibold hover:bg-blue-800 transition duration-300"
+            className="login-button"
           >
             Login as {activeTab}
           </button>
         </div>
 
         {/* Sign Up */}
-        <p className="mt-4 text-center text-gray-600">
+        <p className="signup-link">
           Don't have an account?{" "}
           <button
             onClick={() => navigate("/signup")}
