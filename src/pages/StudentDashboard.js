@@ -1,37 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import '../index.css';
+import { useNavigate } from 'react-router-dom';
 import { auth, db } from '../firebase';
 import { collection, getDocs, query, where } from 'firebase/firestore';
-import { Box, Container, Drawer, List, ListItem, ListItemText, Card, CardContent, Typography, Button, Badge, Avatar, Grid, Fab } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
-import CloseIcon from '@mui/icons-material/Close';
 
-const StudentDashboard = () => {
+const StudentDashboard = ({ isSidebarCollapsed }) => {
   const [complaints, setComplaints] = useState([]);
   const [user, setUser] = useState({
     firstName: '',
     lastName: '',
     email: '',
     department: '',
-    category: '',
     contactNo: '',
     profilePhoto: 'https://via.placeholder.com/150',
   });
   const [selectedComplaint, setSelectedComplaint] = useState(null);
   const userId = auth?.currentUser?.uid;
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!userId) return;
-  
+
     const fetchUserDetails = async () => {
       const userRef = collection(db, 'users');
       const q = query(userRef, where('userId', '==', userId));
       const querySnapshot = await getDocs(q);
-  
+
       querySnapshot.forEach((doc) => {
         const userData = doc.data();
-        console.log("Fetched user data:", userData);  // Log to check the user data
         setUser({
           firstName: userData.firstName || '',
           lastName: userData.lastName || '',
@@ -42,18 +38,17 @@ const StudentDashboard = () => {
           userType: userData.userType || '',
         });
       });
-    };  
-  
+    };
+
     fetchUserDetails();
   }, [userId]);
-  
 
   useEffect(() => {
     if (!userId) return;
 
     const fetchUserComplaints = async () => {
       const complaintsRef = collection(db, 'complaints');
-      const q = query(complaintsRef, where('userId', '==', userId)); // Filter complaints by userId
+      const q = query(complaintsRef, where('userId', '==', userId));
       const querySnapshot = await getDocs(q);
 
       const complaintsArray = [];
@@ -64,182 +59,92 @@ const StudentDashboard = () => {
     };
 
     fetchUserComplaints();
-  }, [userId]); // Depend on userId to fetch complaints specific to the logged-in user
+  }, [userId]);
 
   const handleFeedbackClick = (complaintId) => {
     setSelectedComplaint((prev) => (prev === complaintId ? null : complaintId));
   };
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen((prev) => !prev);
-  };
-
   return (
-    <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' } }}>
-      {/* Sidebar */}
-      <Drawer
-        sx={{
-          width: isSidebarOpen ? 240 : 0,
-          flexShrink: 0,
-          '& .MuiDrawer-paper': {
-            width: isSidebarOpen ? 240 : 0,
-            boxSizing: 'border-box',
-            transition: 'width 0.3s',
-            overflow: isSidebarOpen ? 'auto' : 'hidden',
-          },
-        }}
-        variant="persistent"
-        anchor="left"
-        open={isSidebarOpen}
-      >
-        <List>
-          <ListItem button component={Link} to="/studentdashboard">
-            <ListItemText primary="Dashboard" />
-          </ListItem>
-          <ListItem button component={Link} to="/makecomplaint">
-            <ListItemText primary="Make Complaint" />
-          </ListItem>
-          <ListItem button component={Link} to="/makesuggestion">
-            <ListItemText primary="Make Suggestion" />
-          </ListItem>
-        </List>
-      </Drawer>
+    <div className={`flex-1 p-6 bg-gradient-to-r from-blue-50 to-blue-100 min-h-screen`}>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="shadow-lg rounded-lg p-6 flex flex-col items-center space-y-4 bg-white bg-opacity-90">
+          <img
+            src={user.profilePhoto}
+            alt="Profile"
+            className="w-32 h-32 rounded-full border-4 border-blue-500 mb-4 hover:scale-105 transition-transform"
+          />
+          <h2 className="text-3xl font-semibold text-gray-800">{user.firstName} {user.lastName}</h2>
+          <p className="text-gray-600">Email: {user.email}</p>
+          <p className="text-gray-600">Department: {user.department}</p>
+          <p className="text-gray-600">User Type: {user.userType}</p>
+          <p className="text-gray-600">Contact No: {user.contactNo}</p>
+        </div>
 
-      {/* Sidebar Toggle Button */}
-<Fab
-  onClick={toggleSidebar}
-  sx={{
-    position: 'fixed',
-    bottom: 16, // Move to the bottom of the screen
-    left: 16,
-    zIndex: 1200,
-    backgroundColor: '#1976d2',
-    color: '#fff',
-    '&:hover': {
-      backgroundColor: '#115293',
-    },
-  }}
->
-  {isSidebarOpen ? <CloseIcon /> : <MenuIcon />}
-</Fab>
-
-
-      {/* Main Content */}
-      <Container sx={{ flexGrow: 1, padding: { xs: 2, md: 4 } }}>
-        <Grid container spacing={4}>
-          {/* Profile Card */}
-          <Grid item xs={12} md={4}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <Avatar src={user.profilePhoto} sx={{ width: 100, height: 100, marginBottom: 2 }} />
-              <Card sx={{ width: '100%' }}>
-                <CardContent>
-                  <Typography variant="h5">{user.firstName} {user.lastName}</Typography>
-                  <Typography variant="body1">Email: {user.email}</Typography>
-                  <Typography variant="body1">Department: {user.department}</Typography>
-                  <Typography variant="body1">userType: {user.userType}</Typography>
-                  <Typography variant="body1">Contact No: {user.contactNo}</Typography>
-                </CardContent>
-              </Card>
-            </Box>
-          </Grid>
-
-          {/* Complaints List */}
-          <Grid item xs={12} md={8}>
-            <Typography variant="h6">Your Complaints</Typography>
-            {complaints.length > 0 ? (
-              complaints.map((complaint) => (
-                <Card key={complaint.id} sx={{ marginBottom: 2, padding: 2 }}>
-                  <CardContent>
-  {/* Title and Status Badge for Desktop and Mobile */}
-  <Box sx={{
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexDirection: { xs: 'column', md: 'row' }, // Stack vertically on mobile
-    marginBottom: 1,
-  }}>
-    <Typography variant="h6" sx={{ fontWeight: 'bold', flex: 1 }}>
-      {complaint.title}
-    </Typography>
-
-    {/* Badge only for Desktop */}
-    <Badge
-      badgeContent={complaint.status === 'resolved' ? 'Resolved' : 'Unresolved'}
-      color={complaint.status === 'resolved' ? 'success' : 'error'}
-      sx={{ display: { xs: 'none', md: 'block' },
-      marginRight: 4,
-    }} // Hide on mobile
-    />
-  </Box>
-
-  {/* Complaint Description */}
-  <Typography variant="body2" sx={{ marginTop: 1 }}>
-    {complaint.description}
-  </Typography>
-
-  {/* Category, Submitted On, and Priority for Desktop and Mobile */}
-  <Box sx={{
-    display: 'flex',
-    justifyContent: 'space-between',
-    marginTop: 2,
-    flexDirection: { xs: 'column', md: 'row' }, // Stack vertically on mobile
-    gap: 1,
-  }}>
-    <Typography variant="body2"><strong>Category:</strong> {complaint.category}</Typography>
-    <Typography variant="body2"><strong>Submitted On:</strong> {complaint.submittedOn}</Typography>
-    <Typography variant="body2"><strong>Priority:</strong> {complaint.priority}</Typography>
-  </Box>
-
-  {/* Feedback Button and Status Badge for Mobile */}
-  <Box sx={{
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    gap: 2,
-    flexDirection: { xs: 'row', md: 'row' },
-    marginTop: 2,
-    width: '100%', // Ensure it takes full width on mobile
-    maxWidth: '100%', // Ensure it doesn't stretch beyond screen width
-  }}>
-    <Button
-      variant="outlined"
-      sx={{ width: 'auto', flexShrink: 0 }} // Ensure the button doesn't grow too big
-      onClick={() => handleFeedbackClick(complaint.id)}
-    >
-      {selectedComplaint === complaint.id ? 'Hide Feedback' : 'Show Feedback'}
-    </Button>
-
-    {/* Status Badge for Mobile (inside the feedback container) */}
-    <Badge
-      badgeContent={complaint.status === 'resolved' ? 'Resolved' : 'Unresolved'}
-      color={complaint.status === 'resolved' ? 'success' : 'error'}
-      sx={{
-        display: { xs: 'inline-block', md: 'none' }, // Show on mobile
-        marginLeft: 1,
-        marginRight: 4, // Ensure the badge isn't too close to the button
-        maxWidth: '40%', // Limit the width on mobile to prevent overflow
-      }}
-    />
-  </Box>
-
-  {/* Feedback from Admin (visible when feedback button is clicked) */}
-  {selectedComplaint === complaint.id && (
-    <Box sx={{ marginTop: 2 }}>
-      <Typography variant="body2"><strong>Feedback from Admin:</strong></Typography>
-      <Typography variant="body2">{complaint.adminFeedback || 'No feedback provided yet'}</Typography>
-    </Box>
-  )}
-</CardContent>
-
-                </Card>
-              ))
-            ) : (
-              <Typography>No complaints yet</Typography>
-            )}
-          </Grid>
-        </Grid>
-      </Container>
-    </Box>
+        <div className="md:col-span-2">
+          <h3 className="text-2xl font-semibold mb-4 text-gray-800">Your Complaints</h3>
+          {complaints.length > 0 ? (
+            complaints.map((complaint, index) => (
+              <div
+                key={complaint.id}
+                className={`bg-white shadow-lg rounded-lg p-4 mb-4 transition-all duration-300 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-gray-100'}`}
+              >
+                <div className="flex justify-between items-center mb-2">
+                  <h4 className="text-xl font-bold text-gray-800">{complaint.title}</h4>
+                  <span
+                    className={`inline-flex items-center px-2 py-1 rounded text-sm font-semibold ${
+                      complaint.status === 'resolved'
+                        ? 'bg-green-100 text-green-700'
+                        : 'bg-red-100 text-red-700'
+                    }`}
+                    style={{
+                      minWidth: '80px', // Ensures the badge has a minimum width
+                      height: '30px', // Fixes the height of the badge
+                      justifyContent: 'center', // Centers the text inside the badge
+                      textAlign: 'center', // Ensures text is centered
+                    }}
+                  >
+                    {complaint.status === 'resolved' ? 'Resolved' : 'Unresolved'}
+                  </span>
+                </div>
+                <p className="text-gray-700 mb-4">{complaint.description}</p>
+                <div className="flex flex-col md:flex-row justify-between text-sm text-gray-600 mb-4">
+                  <p><strong>Category:</strong> {complaint.category}</p>
+                  <p><strong>Submitted On:</strong> {complaint.submittedOn}</p>
+                  <p><strong>Priority:</strong> {complaint.priority}</p>
+                </div>
+                <div className="flex items-center">
+                  <button
+                    onClick={() => handleFeedbackClick(complaint.id)}
+                    className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+                  >
+                    {selectedComplaint === complaint.id ? 'Hide Feedback' : 'Show Feedback'}
+                  </button>
+                </div>
+                {selectedComplaint === complaint.id && (
+                  <div className="mt-4 p-4 bg-gray-100 rounded-lg">
+                    <p>
+                      <strong>Feedback from Admin:</strong> 
+                      {complaint.adminFeedback || 'No feedback provided yet'}
+                    </p>
+                  </div>
+                )}
+              </div>
+            ))
+          ) : (
+            <p className="text-gray-600">No complaints yet</p>
+          )}
+          <div className="mt-6 flex justify-center">
+            <button
+              onClick={() => navigate('/makecomplaint')}
+              className="bg-dark-blue text-white px-6 py-3 rounded-lg shadow-lg hover:bg-dark-blue-600 transition-colors"
+            >
+              Add a Complaint
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
