@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { auth, db } from '../firebase';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 
+
 const StudentDashboard = ({ isSidebarCollapsed }) => {
   const [complaints, setComplaints] = useState([]);
   const [user, setUser] = useState({

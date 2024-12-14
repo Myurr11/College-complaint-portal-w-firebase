@@ -8,6 +8,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import MakeComplaint from './pages/MakeComplaint';
 import MakeSuggestion from './pages/MakeSuggestion';
 import logo from './media/logo_campus.png';
+import campusBackground from './media/campus-image.jpg'; // Import the background image
 
 function App() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
@@ -23,7 +24,12 @@ function App() {
           isSidebarCollapsed={isSidebarCollapsed}
           toggleSidebar={toggleSidebar}
         />
-        <div className={`pt-24 transition-all duration-300 ${!isSidebarCollapsed ? 'mr-64' : ''}`}>
+        <div
+          className={`pt-24 transition-all duration-300 ${!isSidebarCollapsed ? 'mr-64' : ''} min-h-screen bg-cover bg-center`}
+          style={{
+            backgroundImage: `url(${campusBackground})`, // Set default background image
+          }}
+        >
           <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
