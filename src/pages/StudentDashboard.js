@@ -87,12 +87,12 @@ const StudentDashboard = ({ isSidebarCollapsed }) => {
           <p className="text-gray-600">Contact No: {user.contactNo}</p>
 
           {/* Statistics Section */}
-          <div className="mt-6 w-full p-4 border-2 border-grey-100 bg-white-100 rounded-lg shadow-lg">
+          <div className="mt-6 w-full p-4 border-2 border-grey-100 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg shadow-lg">
             <h3 className="text-xl font-semibold text-gray-800 mb-4">Complaint Statistics</h3>
             <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 gap-6">
               {/* Total Complaints */}
               <div className="p-4 bg-blue-50 border-l-4 border-blue-500 rounded-lg shadow mb-4">
-                <h4 className="text-sm text-gray-600">Total Complaints</h4>
+                <h4 className="text-sm text-gray-600">Total Complaints</h4> 
                 <p className="text-lg font-bold">{totalComplaints}</p>
               </div>
             </div>

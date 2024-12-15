@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from "../firebase";
@@ -10,6 +10,16 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Restrict scrolling when this component is active
+    document.body.style.overflow = "hidden";
+
+    // Cleanup: reset the overflow when the component is unmounted
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, []);
 
   const handleLogin = async () => {
     try {
