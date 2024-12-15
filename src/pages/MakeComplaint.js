@@ -121,6 +121,7 @@ const MakeComplaint = () => {
               <option value="IT Support">IT Support</option>
               <option value="Facilities">Facilities</option>
               <option value="Academics">Academics</option>
+              <option value="">Others</option>
             </select>
           </label>
           <label className="block text-gray-700">

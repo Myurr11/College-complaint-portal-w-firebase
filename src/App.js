@@ -24,12 +24,12 @@ function App() {
           isSidebarCollapsed={isSidebarCollapsed}
           toggleSidebar={toggleSidebar}
         />
-        <div
-          className={`pt-24 transition-all duration-300 ${!isSidebarCollapsed ? 'mr-64' : ''} min-h-screen bg-cover bg-center`}
-          style={{
-            backgroundImage: `url(${campusBackground})`, // Set default background image
-          }}
-        >
+       <div
+  className={`pt-24 transition-all duration-300 ${!isSidebarCollapsed ? 'mr-64' : ''} min-h-screen bg-cover bg-center`}
+  style={{
+    backgroundImage: `url(${campusBackground})`, // Set default background image
+  }}
+>
           <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />

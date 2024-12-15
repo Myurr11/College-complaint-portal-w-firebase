@@ -13,6 +13,7 @@ ChartJS.register(Title, Tooltip, Legend, ArcElement);
 const AdminDashboard = () => {
   const [complaints, setComplaints] = useState([]);
   const [users, setUsers] = useState({});
+  const [suggestions, setSuggestions] = useState([]); // State for suggestions
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
   const [filteredComplaints, setFilteredComplaints] = useState([]);
@@ -23,6 +24,7 @@ const AdminDashboard = () => {
     profilePhoto: 'https://via.placeholder.com/150',
   });
   const [feedbacks, setFeedbacks] = useState({}); // State to store feedback for each complaint
+  const [showSuggestions, setShowSuggestions] = useState(false); // State to toggle suggestions window
 
   useEffect(() => {
     const fetchComplaintsAndUsers = async () => {
@@ -40,6 +42,14 @@ const AdminDashboard = () => {
         usersList[doc.id] = doc.data();
       });
       setUsers(usersList);
+
+      // Fetch suggestions
+      const suggestionsSnapshot = await getDocs(collection(db, "suggestions"));
+      const suggestionsList = [];
+      suggestionsSnapshot.forEach((doc) => {
+        suggestionsList.push({ id: doc.id, ...doc.data() });
+      });
+      setSuggestions(suggestionsList);
     };
 
     fetchComplaintsAndUsers();
@@ -219,8 +229,42 @@ const AdminDashboard = () => {
       </div>
 
       {/* Complaints Section */}
-      <div className="bg-white p-6 rounded-lg shadow-lg">
-        <h2 className="text-xl font-bold text-gray-800 mb-6">Complaints</h2>
+      <div className="bg-gradient-to-r from-yellow-50 to-blue-100 p-6 rounded-lg shadow-lg">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-xl font-bold text-gray-800">Complaints</h2>
+          {/* Show Suggestions Button */}
+          <button
+            onClick={() => setShowSuggestions(!showSuggestions)}
+            className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+          >
+            Show Suggestions
+          </button>
+        </div>
+
+        {/* Suggestions Modal */}
+        {showSuggestions && (
+          <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
+              <h3 className="text-xl font-semibold text-gray-800 mb-4">Suggestions</h3>
+              <ul className="space-y-4 bg-blue-50 p-6 rounded-lg shadow-lg">
+                {suggestions.map((suggestion) => (
+                  <li key={suggestion.id} className="border-b pb-4">
+                    <h4 className="font-bold text-gray-800">{suggestion.title}</h4>
+                    <p className="text-gray-600">{suggestion.description}</p>
+                    <p className="text-gray-500 text-sm">Submitted on: {suggestion.submittedOn}</p>
+                  </li>
+                ))}
+              </ul>
+              <button
+                onClick={() => setShowSuggestions(false)}
+                className="mt-4 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
+
         <div className="space-y-6">
           {filteredComplaints.map((complaint) => (
             <div key={complaint.id} className="p-6 bg-white rounded-lg border border-gray-200 shadow-md transition-transform transform hover:scale-102">

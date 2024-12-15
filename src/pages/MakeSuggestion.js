@@ -11,8 +11,6 @@ const MakeSuggestion = () => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    category: "",
-    priority: "Low",
     agreement: false,
   });
 
@@ -50,8 +48,6 @@ const MakeSuggestion = () => {
     const suggestion = {
       title: formData.title,
       description: formData.description,
-      category: formData.category,
-      priority: formData.priority,
       status: "Unresolved",
       submittedOn: new Date().toLocaleDateString(),
       userId: userId,
@@ -62,11 +58,8 @@ const MakeSuggestion = () => {
       setModalMessage("Suggestion submitted successfully!");
       setShowModal(true);
       setFormData({
-        ...formData,
         title: "",
         description: "",
-        category: "",
-        priority: "Low",
         agreement: false,
       });
     } catch (error) {
@@ -78,7 +71,7 @@ const MakeSuggestion = () => {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-r from-blue-50 to-yellow-100 p-8">
+    <main className="min-h-screen bg-gradient-to-r from-yellow-50 to-blue-100 p-8">
       <h2 className="text-3xl font-semibold text-center text-gray-800 mb-8">Make a Suggestion</h2>
       <form
         onSubmit={handleSubmit}
@@ -107,35 +100,6 @@ const MakeSuggestion = () => {
               required
               className="mt-2 block w-full p-4 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
             />
-          </label>
-          <label className="block text-gray-700">
-            Category:
-            <select
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-              required
-              className="mt-2 block w-full p-4 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-            >
-              <option value="">Select a Category</option>
-              <option value="IT Support">IT Support</option>
-              <option value="Facilities">Facilities</option>
-              <option value="Academics">Academics</option>
-            </select>
-          </label>
-          <label className="block text-gray-700">
-            Priority:
-            <select
-              name="priority"
-              value={formData.priority}
-              onChange={handleChange}
-              required
-              className="mt-2 block w-full p-4 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-            >
-              <option value="Low">Low</option>
-              <option value="Medium">Medium</option>
-              <option value="High">High</option>
-            </select>
           </label>
         </fieldset>
 

@@ -66,6 +66,11 @@ const StudentDashboard = ({ isSidebarCollapsed }) => {
     setSelectedComplaint((prev) => (prev === complaintId ? null : complaintId));
   };
 
+  // Calculate statistics
+  const totalComplaints = complaints.length;
+  const resolvedComplaints = complaints.filter((complaint) => complaint.status === 'resolved').length;
+  const unresolvedComplaints = totalComplaints - resolvedComplaints;
+
   return (
     <div className={`flex-1 p-6 bg-gradient-to-r from-blue-50 to-blue-100 min-h-screen`}>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -80,6 +85,34 @@ const StudentDashboard = ({ isSidebarCollapsed }) => {
           <p className="text-gray-600">Department: {user.department}</p>
           <p className="text-gray-600">User Type: {user.userType}</p>
           <p className="text-gray-600">Contact No: {user.contactNo}</p>
+
+          {/* Statistics Section */}
+          <div className="mt-6 w-full p-4 border-2 border-grey-100 bg-white-100 rounded-lg shadow-lg">
+            <h3 className="text-xl font-semibold text-gray-800 mb-4">Complaint Statistics</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 gap-6">
+              {/* Total Complaints */}
+              <div className="p-4 bg-blue-50 border-l-4 border-blue-500 rounded-lg shadow mb-4">
+                <h4 className="text-sm text-gray-600">Total Complaints</h4>
+                <p className="text-lg font-bold">{totalComplaints}</p>
+              </div>
+            </div>
+
+            {/* Resolved and Unresolved Complaints */}
+            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Resolved Complaints */}
+              <div className="p-4 bg-green-50 border-l-4 border-green-500 rounded-lg shadow">
+                <h4 className="text-sm text-gray-600">Resolved<br></br> Complaints</h4>
+                <p className="text-lg font-bold">{resolvedComplaints}</p>
+              </div>
+
+              {/* Unresolved Complaints */}
+              <div className="p-4 bg-red-50 border-l-4 border-red-500 rounded-lg shadow">
+                <h4 className="text-sm text-gray-600">Unresolved Complaints</h4>
+                <p className="text-lg font-bold">{unresolvedComplaints}</p>
+              </div>
+            </div>
+          </div>
+
         </div>
 
         <div className="md:col-span-2">
@@ -104,10 +137,10 @@ const StudentDashboard = ({ isSidebarCollapsed }) => {
                         : 'bg-red-100 text-red-700'
                     }`}
                     style={{
-                      minWidth: '80px', // Ensures the badge has a minimum width
-                      height: '30px', // Fixes the height of the badge
-                      justifyContent: 'center', // Centers the text inside the badge
-                      textAlign: 'center', // Ensures text is centered
+                      minWidth: '80px',
+                      height: '30px',
+                      justifyContent: 'center',
+                      textAlign: 'center',
                     }}
                   >
                     {complaint.status === 'resolved' ? 'Resolved' : 'Unresolved'}
