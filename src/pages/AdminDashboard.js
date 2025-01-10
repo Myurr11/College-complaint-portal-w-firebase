@@ -17,7 +17,7 @@ const AdminDashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
   const [filteredComplaints, setFilteredComplaints] = useState([]);
-  const [admin, setAdmin] = useState({
+  const [admin] = useState({
     firstName: 'Admin',
     lastName: 'User',
     email: 'admin@example.com',
