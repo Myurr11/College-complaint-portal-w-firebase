@@ -19,7 +19,7 @@ function App() {
 
   return (
     <AuthProvider>
-      <Router>
+      <Router basename="/">
         <Header
           isSidebarCollapsed={isSidebarCollapsed}
           toggleSidebar={toggleSidebar}
