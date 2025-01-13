@@ -1,6 +1,6 @@
-import { BrowserRouter as Router, Routes, Route, useLocation, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation, Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import StudentDashboard from "./pages/StudentDashboard";
@@ -23,9 +23,9 @@ function App() {
           isSidebarCollapsed={isSidebarCollapsed}
           toggleSidebar={toggleSidebar}
         />
-       <div
-  className={`pt-24 transition-all duration-300 ${!isSidebarCollapsed ? 'mr-64' : ''} min-h-screen bg-cover bg-center`}
->
+        <div
+          className={`pt-24 transition-all duration-300 ${!isSidebarCollapsed ? 'mr-64' : ''} min-h-screen bg-cover bg-center`}
+        >
           <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
@@ -38,7 +38,6 @@ function App() {
             <Route path="/makesuggestion" element={<MakeSuggestion />} />
           </Routes>
         </div>
-        {/* Conditional Sidebar */}
         <Sidebar
           isSidebarCollapsed={isSidebarCollapsed}
           toggleSidebar={toggleSidebar}
@@ -56,10 +55,10 @@ function Header({ isSidebarCollapsed, toggleSidebar }) {
     location.pathname === '/makesuggestion';
 
   return (
-<header className="fixed top-0 left-0 w-full bg-gradient-to-r from-blue-100 to-yellow-100 p-6 z-50 border-b border-yellow-500">
-<div className="flex items-center justify-between max-w-screen-xl mx-auto"> 
-        <div className="flex items-center space-x-4"> 
-          <img src={logo} alt="Logo" className="w-20 h-12 sm:w-16 sm:h-12" /> 
+    <header className="fixed top-0 left-0 w-full bg-gradient-to-r from-blue-100 to-yellow-100 p-6 z-50 border-b border-yellow-500">
+      <div className="flex items-center justify-between max-w-screen-xl mx-auto">
+        <div className="flex items-center space-x-4">
+          <img src={logo} alt="Logo" className="w-20 h-12 sm:w-16 sm:h-12" />
           <h1 className="text-xl sm:text-lg font-semibold text-black hidden sm:block">
             Bharati Vidyapeeth (Deemed to be University)
           </h1>
@@ -79,13 +78,25 @@ function Header({ isSidebarCollapsed, toggleSidebar }) {
     </header>
   );
 }
-
-function Sidebar({ isSidebarCollapsed, toggleSidebar }) {
+function Sidebar({ isSidebarCollapsed }) {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+  
   const isVisible =
     location.pathname === "/studentdashboard" ||
     location.pathname === "/makecomplaint" ||
     location.pathname === "/makesuggestion";
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/');
+    } catch (error) {
+      console.error('Logout failed:', error);
+      // You might want to show an error message to the user here
+    }
+  };
 
   if (!isVisible) return null;
 
@@ -111,9 +122,16 @@ function Sidebar({ isSidebarCollapsed, toggleSidebar }) {
             Make Suggestion
           </Link>
         </li>
+        <li className="pt-4 border-t border-gray-200">
+          <button
+            onClick={handleLogout}
+            className="w-full text-left text-red-500 hover:text-red-700 text-lg font-semibold transition-colors"
+          >
+            Logout
+          </button>
+        </li>
       </ul>
     </div>
   );
 }
-
 export default App;

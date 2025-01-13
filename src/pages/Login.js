@@ -76,7 +76,7 @@ const Login = () => {
             </h1>
             <p className="text-sm lg:text-lg text-white">
               Your feedback matters! Use this portal to submit any complaints or suggestions. 
-              We are committed to addressing your concerns and improving our services
+              We are committed to addressing your concerns and improving our services.
             </p>
           </div>
         </div>
@@ -84,11 +84,11 @@ const Login = () => {
 
       {/* Right Section - Login Form */}
       <div
-        className={`absolute lg:relative lg:w-[25%] w-full bg-white transition-all duration-700 ease-in-out 
-          ${isSwipedUp && isMobile ? 'h-[85vh]' : 'h-[35vh]'} 
-          lg:h-full top-10 bottom-0 left-0 z-10 rounded-t-3xl lg:rounded-none shadow-lg`}
-        {...(isMobile ? swipeHandlers : {})}
-      >
+  className={`absolute lg:relative lg:w-[25%] w-full bg-white transition-all duration-700 ease-in-out 
+    ${isSwipedUp && isMobile ? 'h-[85vh]' : 'h-[15vh]'} 
+    lg:h-full bottom-0 left-0 z-10 rounded-t-3xl lg:rounded-none shadow-lg`}
+  {...(isMobile ? swipeHandlers : {})}
+>
         <div className="h-full flex flex-col items-center justify-center px-8">
           {/* Swipe Instruction */}
           {!isSwipedUp && isMobile && (
