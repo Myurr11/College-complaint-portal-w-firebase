@@ -69,7 +69,7 @@ function Header({ isSidebarCollapsed, toggleSidebar }) {
         {isVisible && (
           <button
             onClick={toggleSidebar}
-            className="text-black px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors"
+            className="text-black px-4 py-2 rounded-lg bg-yellow-400 hover:bg-dark-blue hover:text-white transition-colors"
           >
             {isSidebarCollapsed ? '☰' : '✖'}
           </button>

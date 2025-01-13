@@ -8,6 +8,7 @@ import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement } from 'chart.js';
 // eslint-disable-next-line
 import { Trash2 } from 'lucide-react';
+import AdminProfiePhoto from "../media/Admin_placeholder.jpg";
 
 // Register chart.js components
 ChartJS.register(Title, Tooltip, Legend, ArcElement);
@@ -19,11 +20,13 @@ const AdminDashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
   const [filteredComplaints, setFilteredComplaints] = useState([]);
+  const [filterCategory, setFilterCategory] = useState("");
+  const [filterPriority, setFilterPriority] = useState("");
   const [admin] = useState({
     firstName: 'Admin',
     lastName: 'User',
     email: 'admin@example.com',
-    profilePhoto: 'https://via.placeholder.com/150',
+    profilePhoto: AdminProfiePhoto,
   });
   const [feedbacks, setFeedbacks] = useState({});
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -58,20 +61,31 @@ const AdminDashboard = () => {
 
   const handleSearch = () => {
     let filtered = complaints;
+  
     if (searchQuery) {
       filtered = filtered.filter(complaint =>
         complaint.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         complaint.description.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
-
+  
     if (filterStatus) {
-      filtered = filtered.filter(complaint => complaint.status === filterStatus);
+      filtered = filtered.filter(complaint => complaint.status.toLowerCase() === filterStatus.toLowerCase());
     }
-
+  
+    if (filterCategory) {
+      filtered = filtered.filter(complaint => 
+        complaint.category && complaint.category.toLowerCase() === filterCategory.toLowerCase()
+      );
+    }
+  
+    if (filterPriority) {
+      filtered = filtered.filter(complaint => complaint.priority.toLowerCase() === filterPriority.toLowerCase());
+    }
+  
     setFilteredComplaints(filtered);
   };
-
+  
   const handleToggleStatus = async (id, currentStatus) => {
     const complaintRef = doc(db, "complaints", id);
     await updateDoc(complaintRef, {
@@ -211,30 +225,57 @@ const AdminDashboard = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
         {/* Filter Section */}
         <div className="p-6 bg-blue-50 border-2 border-blue-500 rounded-lg shadow-lg">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Complaint Filters</h3>
-          <input
-            type="text"
-            placeholder="Search Complaints"
+  <h3 className="text-lg font-semibold text-gray-800 mb-4">Complaint Filters</h3>
+  
+  <input
+    type="text"
+    placeholder="Search Complaints"
+    className="w-full p-2 border rounded mb-4"
+    value={searchQuery}
+    onChange={(e) => setSearchQuery(e.target.value)}
+  />
+  
+  <select
+    className="w-full p-2 border rounded mb-4"
+    value={filterStatus}
+    onChange={(e) => setFilterStatus(e.target.value)}
+  >
+    <option value="">All Statuses</option>
+    <option value="resolved">Resolved</option>
+    <option value="unresolved">Unresolved</option>
+  </select>
+  
+  <select
             className="w-full p-2 border rounded mb-4"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <select
-            className="w-full p-2 border rounded mb-4"
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
+            value={filterCategory}
+            onChange={(e) => setFilterCategory(e.target.value)}
           >
-            <option value="">All</option>
-            <option value="resolved">Resolved</option>
-            <option value="unresolved">Unresolved</option>
+            <option value="">Filter by Category</option>
+            <option value="IT support">IT Support</option>
+            <option value="facilities">Facilities</option>
+            <option value="academics">Academics</option>
+            <option value="others">Others</option>
           </select>
-          <button
-            onClick={handleSearch}
-            className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
-          >
-            Search
-          </button>
-        </div>
+  
+  <select
+    className="w-full p-2 border rounded mb-4"
+    value={filterPriority}
+    onChange={(e) => setFilterPriority(e.target.value)}
+  >
+    <option value="">All Priorities</option>
+    <option value="low">Low</option>
+    <option value="medium">Medium</option>
+    <option value="high">High</option>
+  </select>
+  
+  <button
+    onClick={handleSearch}
+    className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+  >
+    Search
+  </button>
+</div>
+
 
         {/* Pie Chart Section */}
         <div className="p-6 bg-green-50 border-2 border-green-500 rounded-lg shadow-lg">

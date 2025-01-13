@@ -3,6 +3,7 @@ import '../index.css';
 import { useNavigate } from 'react-router-dom';
 import { auth, db } from '../firebase';
 import { collection, query, where, onSnapshot, getDocs } from 'firebase/firestore';
+import ProfilePhoto from "../media/9k.png";
 
 const StudentDashboard = ({ isSidebarCollapsed }) => {
   const [complaints, setComplaints] = useState([]);
@@ -12,7 +13,7 @@ const StudentDashboard = ({ isSidebarCollapsed }) => {
     email: '',
     department: '',
     contactNo: '',
-    profilePhoto: 'https://via.placeholder.com/150',
+    profilePhoto: ProfilePhoto,
   });
   const [selectedComplaint, setSelectedComplaint] = useState(null);
   const userId = auth?.currentUser?.uid;
@@ -35,7 +36,7 @@ const StudentDashboard = ({ isSidebarCollapsed }) => {
           email: userData.email || '',
           department: userData.department || '',
           contactNo: userData.contactNumber || '',
-          profilePhoto: userData.profilePhoto || 'https://via.placeholder.com/150',
+          profilePhoto: userData.profilePhoto || ProfilePhoto,
           userType: userData.userType || '',
         });
       });
