@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import '../index.css';
-<<<<<<< HEAD
 import { db } from '../firebase';
 import { collection, getDocs, updateDoc, doc } from 'firebase/firestore';
 import { toast } from 'react-toastify';
@@ -9,14 +8,6 @@ import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement } from 'chart.js';
 // eslint-disable-next-line
 import { Trash2 } from 'lucide-react';
-=======
-import { db } from '../firebase'; // Firebase setup
-import { collection, getDocs, updateDoc, doc } from 'firebase/firestore';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { Pie } from 'react-chartjs-2'; // Graphical chart library
-import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement } from 'chart.js';
->>>>>>> origin/main
 
 // Register chart.js components
 ChartJS.register(Title, Tooltip, Legend, ArcElement);
@@ -24,11 +15,7 @@ ChartJS.register(Title, Tooltip, Legend, ArcElement);
 const AdminDashboard = () => {
   const [complaints, setComplaints] = useState([]);
   const [users, setUsers] = useState({});
-<<<<<<< HEAD
   const [suggestions, setSuggestions] = useState([]);
-=======
-  const [suggestions, setSuggestions] = useState([]); // State for suggestions
->>>>>>> origin/main
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
   const [filteredComplaints, setFilteredComplaints] = useState([]);
@@ -38,13 +25,8 @@ const AdminDashboard = () => {
     email: 'admin@example.com',
     profilePhoto: 'https://via.placeholder.com/150',
   });
-<<<<<<< HEAD
   const [feedbacks, setFeedbacks] = useState({});
   const [showSuggestions, setShowSuggestions] = useState(false);
-=======
-  const [feedbacks, setFeedbacks] = useState({}); // State to store feedback for each complaint
-  const [showSuggestions, setShowSuggestions] = useState(false); // State to toggle suggestions window
->>>>>>> origin/main
 
   useEffect(() => {
     const fetchComplaintsAndUsers = async () => {
@@ -63,10 +45,6 @@ const AdminDashboard = () => {
       });
       setUsers(usersList);
 
-<<<<<<< HEAD
-=======
-      // Fetch suggestions
->>>>>>> origin/main
       const suggestionsSnapshot = await getDocs(collection(db, "suggestions"));
       const suggestionsList = [];
       suggestionsSnapshot.forEach((doc) => {
@@ -111,7 +89,6 @@ const AdminDashboard = () => {
     setFilteredComplaints(complaintsList);
   };
 
-<<<<<<< HEAD
   const handleDeleteFeedback = async (id) => {
     try {
       const complaintRef = doc(db, "complaints", id);
@@ -135,8 +112,6 @@ const AdminDashboard = () => {
     }
   };
 
-=======
->>>>>>> origin/main
   const handleAddFeedback = async (id) => {
     if (!feedbacks[id]) {
       toast.error("Please provide feedback!");
@@ -281,10 +256,6 @@ const AdminDashboard = () => {
       <div className="bg-gradient-to-r from-yellow-50 to-blue-100 p-6 rounded-lg shadow-lg">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-bold text-gray-800">Complaints</h2>
-<<<<<<< HEAD
-=======
-          {/* Show Suggestions Button */}
->>>>>>> origin/main
           <button
             onClick={() => setShowSuggestions(!showSuggestions)}
             className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
@@ -358,7 +329,6 @@ const AdminDashboard = () => {
                 </p>
               </div>
 
-<<<<<<< HEAD
               {/* Feedback Section with Delete Option */}
               {complaint.feedback && (
                 <div className="mt-4 mb-4 p-4 bg-gray-50 border border-gray-300 rounded-lg shadow">
@@ -375,13 +345,6 @@ const AdminDashboard = () => {
                       <Trash2 size={20} />
                     </button>
                   </div>
-=======
-              {/* Feedback Section */}
-              {complaint.feedback && (
-                <div className="mt-4 mb-4 p-4 bg-gray-50 border border-gray-300 rounded-lg shadow">
-                  <h5 className="font-semibold text-gray-700">Feedback added: </h5>
-                  <p className="text-gray-600">{complaint.feedback}</p>
->>>>>>> origin/main
                 </div>
               )}
 
@@ -419,8 +382,4 @@ const AdminDashboard = () => {
   );
 };
 
-<<<<<<< HEAD
 export default AdminDashboard;
-=======
-export default AdminDashboard;
->>>>>>> origin/main
