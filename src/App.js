@@ -8,6 +8,10 @@ import AdminDashboard from "./pages/AdminDashboard";
 import MakeComplaint from './pages/MakeComplaint';
 import MakeSuggestion from './pages/MakeSuggestion';
 import logo from './media/logo_campus.png';
+<<<<<<< HEAD
+=======
+import campusBackground from './media/campus-image.jpg'; // Import the background image
+>>>>>>> origin/main
 
 function App() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
@@ -18,13 +22,23 @@ function App() {
 
   return (
     <AuthProvider>
+<<<<<<< HEAD
       <Router>
+=======
+      <Router basename="/">
+>>>>>>> origin/main
         <Header
           isSidebarCollapsed={isSidebarCollapsed}
           toggleSidebar={toggleSidebar}
         />
        <div
   className={`pt-24 transition-all duration-300 ${!isSidebarCollapsed ? 'mr-64' : ''} min-h-screen bg-cover bg-center`}
+<<<<<<< HEAD
+=======
+  style={{
+    backgroundImage: `url(${campusBackground})`, // Set default background image
+  }}
+>>>>>>> origin/main
 >
           <Routes>
             <Route path="/" element={<Login />} />
@@ -56,10 +70,17 @@ function Header({ isSidebarCollapsed, toggleSidebar }) {
     location.pathname === '/makesuggestion';
 
   return (
+<<<<<<< HEAD
 <header className="fixed top-0 left-0 w-full bg-gradient-to-r from-blue-100 to-yellow-100 p-6 z-50 border-b border-yellow-500">
 <div className="flex items-center justify-between max-w-screen-xl mx-auto"> 
         <div className="flex items-center space-x-4"> 
           <img src={logo} alt="Logo" className="w-20 h-12 sm:w-16 sm:h-12" /> 
+=======
+    <header className="fixed top-0 left-0 w-full bg-opacity-40 backdrop-blur-md p-6 z-50 border-b border-yellow-500">
+      <div className="flex items-center justify-between max-w-screen-xl mx-auto">
+        <div className="flex items-center space-x-4">
+          <img src={logo} alt="Logo" className="w-20 h-12 sm:w-16 sm:h-12" />
+>>>>>>> origin/main
           <h1 className="text-xl sm:text-lg font-semibold text-black hidden sm:block">
             Bharati Vidyapeeth (Deemed to be University)
           </h1>

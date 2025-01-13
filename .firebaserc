@@ -1,5 +1,13 @@
 {
   "projects": {
+<<<<<<< HEAD
     "default": "my-college-complaints"
   }
+=======
+    "default": "college-complaint-suggestion",
+    "my-college-complaints": "college-complaint-suggestion"
+  },
+  "targets": {},
+  "etags": {}
+>>>>>>> origin/main
 }

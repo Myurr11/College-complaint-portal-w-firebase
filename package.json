@@ -10,13 +10,19 @@
     "firebase": "^11.0.2",
     "firebase-admin": "^13.0.1",
     "firebase-functions": "^6.1.1",
+<<<<<<< HEAD
     "lucide-react": "^0.471.1",
+=======
+>>>>>>> origin/main
     "react": "^18.3.1",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.0.1",
     "react-scripts": "5.0.1",
+<<<<<<< HEAD
     "react-swipeable": "^7.0.2",
+=======
+>>>>>>> origin/main
     "react-toastify": "^10.0.6",
     "web-vitals": "^2.1.4"
   },
@@ -45,6 +51,10 @@
     ]
   },
   "devDependencies": {
+<<<<<<< HEAD
+=======
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+>>>>>>> origin/main
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.16"
