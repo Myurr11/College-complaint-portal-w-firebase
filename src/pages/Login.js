@@ -5,7 +5,7 @@ import { auth, db } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import { useSwipeable } from "react-swipeable";
 import campusImageDesktop from "../media/campus-image.jpg";
-import campusImageMobile from "../media/IMG_1230.JPG";
+import campusImageMobile from "../media/CampusImage_phone.jpg";
 
 const Login = () => {
   const [activeTab, setActiveTab] = useState("Student");
@@ -67,11 +67,11 @@ const Login = () => {
           className="w-full h-full object-cover"
         />
         {/* Black Tint Overlay */}
-        <div className="absolute inset-0 bg-black opacity-60"></div>
+        <div className="absolute inset-0 bg-black opacity-50"></div>
         {/* Text Content */}
-        <div className="absolute inset-0 flex flex-col items-left justify-center px-4 mt-20">
+        <div className="absolute inset-0 flex flex-col items-left justify-center px-4 mt-">
           <div className="max-w-2xl text-left">
-            <h1 className="text-2xl lg:text-5xl font-bold text-white mb-4">
+            <h1 className="text-2xl lg:text-5xl font-bold text-white">
               Welcome to Complaints and Suggestion portal
             </h1>
             <p className="text-sm lg:text-lg text-white">
@@ -85,7 +85,7 @@ const Login = () => {
       {/* Right Section - Login Form */}
       <div
   className={`absolute lg:relative lg:w-[25%] w-full bg-white transition-all duration-700 ease-in-out 
-    ${isSwipedUp && isMobile ? 'h-[85vh]' : 'h-[15vh]'} 
+    ${isSwipedUp && isMobile ? 'h-[90vh]' : 'h-[10vh]'} 
     lg:h-full bottom-0 left-0 z-10 rounded-t-3xl lg:rounded-none shadow-lg`}
   {...(isMobile ? swipeHandlers : {})}
 >

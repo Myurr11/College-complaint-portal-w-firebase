@@ -3,7 +3,7 @@ import '../index.css';
 import { useNavigate } from 'react-router-dom';
 import { auth, db } from '../firebase';
 import { collection, query, where, onSnapshot, getDocs } from 'firebase/firestore';
-import ProfilePhoto from "../media/9k.png";
+import ProfilePhoto from "../media/StudentDashboard_Placeholder.png";
 
 const StudentDashboard = ({ isSidebarCollapsed }) => {
   const [complaints, setComplaints] = useState([]);

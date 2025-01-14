@@ -3,6 +3,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../firebase";
 import { useNavigate } from "react-router-dom";
+import campusImageDesktop from "../media/Campus_image_2.jpg";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -11,8 +12,8 @@ const SignUp = () => {
     password: "",
     firstName: "",
     lastName: "",
-    department: "Select department", // Default department
-    userType: "Select UserType", // Default role
+    department: "Select department",
+    userType: "Select UserType",
   });
 
   const navigate = useNavigate();
@@ -20,17 +21,18 @@ const SignUp = () => {
   const handleSignUp = async () => {
     try {
       const { email, password, ...userData } = formData;
+
       // Create the user in Firebase Authentication
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      
-      // Include the userId (uid) and email in the document
+
+      // Save user data in Firestore
       await setDoc(doc(db, "users", userCredential.user.uid), {
-        ...userData, // Include other user data like firstName, lastName, etc.
-        email: email, // Explicitly store the email as a field
-        userId: userCredential.user.uid, // Explicitly store the userId as a field
-        userType: formData.userType.toLowerCase(), // Ensure lowercase for consistency
+        ...userData,
+        email: email,
+        userId: userCredential.user.uid,
+        userType: formData.userType.toLowerCase(),
       });
-  
+
       alert("SignUp Successful! Please log in.");
       navigate("/login");
     } catch (error) {
@@ -40,16 +42,27 @@ const SignUp = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen m-0 p-0">
-      <div className="bg-white p-10 rounded-lg shadow-lg w-full max-w-md">
-        {/* Sign Up Form */}
-        <h2 className="text-2xl font-bold text-center text-dark-blue mb-4 mt-4">
+    <div
+      className="relative flex justify-center items-center min-h-screen bg-cover bg-center"
+      style={{
+        backgroundImage: `url(${campusImageDesktop})`,
+      }}
+    >
+      {/* Black Tint Overlay */}
+      <div className="absolute inset-0 bg-black opacity-50 pointer-events-none z-0"></div>
+
+      {/* SignUp Form*/}
+      <div className="relative z-10 bg-white p-10 rounded-lg shadow-lg w-full max-w-md">
+        <h2 className="text-2xl font-bold text-center text-dark-blue mb-2">
           Sign Up
-        </h2>
+        </h2> 
+        <hr className="mb-5"></hr>
         <div className="space-y-3">
           {/* First Name */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">First Name</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
+              First Name
+            </label>
             <input
               type="text"
               placeholder="Enter your first name"
@@ -60,7 +73,9 @@ const SignUp = () => {
 
           {/* Last Name */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">Last Name</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
+              Last Name
+            </label>
             <input
               type="text"
               placeholder="Enter your last name"
@@ -71,10 +86,13 @@ const SignUp = () => {
 
           {/* Contact Number */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">Contact Number</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
+              Contact Number
+            </label>
             <input
               type="text"
               placeholder="Enter your contact number"
+              maxLength="10"
               onChange={(e) => setFormData({ ...formData, contactNumber: e.target.value })}
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-dark-blue"
             />
@@ -82,7 +100,7 @@ const SignUp = () => {
 
           {/* Email */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">Email</label>
             <input
               type="email"
               placeholder="Enter your email"
@@ -93,18 +111,30 @@ const SignUp = () => {
 
           {/* Password */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">Password</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
+              Password
+            </label>
             <input
               type="password"
               placeholder="Enter your password"
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-dark-blue"
             />
+            <small className="text-gray-600 mt-1 block">
+              Password should have Minimum of 8 characters and must contain at least:
+              <ul className="list-disc ml-5">
+                <li>One uppercase letter ex. A,B</li>
+                <li>One lowercase letter ex. a,b</li>
+                <li>One unique character ex. #,@</li>
+              </ul>
+            </small>
           </div>
 
           {/* Department */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">Department</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
+              Department
+            </label>
             <select
               onChange={(e) => setFormData({ ...formData, department: e.target.value })}
               value={formData.department}
@@ -118,7 +148,9 @@ const SignUp = () => {
 
           {/* User Type */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">User Type</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
+              User Type
+            </label>
             <select
               onChange={(e) => setFormData({ ...formData, userType: e.target.value })}
               value={formData.userType}
