@@ -3,10 +3,12 @@ import { db } from "../firebase";
 import { collection, addDoc } from "firebase/firestore";
 import { useAuth } from "../context/AuthContext";
 import Modal from "../Modal";
+import { useNavigate } from "react-router-dom";
 
 const MakeComplaint = () => {
   const { currentUser } = useAuth();
   const userId = currentUser ? currentUser.uid : null;
+  const navigate = useNavigate(); // Initialize navigate hook
 
   const [formData, setFormData] = useState({
     title: "",
@@ -61,14 +63,21 @@ const MakeComplaint = () => {
       await addDoc(collection(db, "complaints"), complaint);
       setModalMessage("Complaint submitted successfully!");
       setShowModal(true);
+
+      // Reset form data
       setFormData({
-        ...formData,
         title: "",
         description: "",
         category: "",
         priority: "Low",
         agreement: false,
       });
+
+      // Navigate back to the dashboard after a short delay
+      setTimeout(() => {
+        setShowModal(false);
+        navigate("/studentdashboard"); // Redirect to dashboard
+      }, 2000);
     } catch (error) {
       setModalMessage("Error submitting complaint. Please try again.");
       setShowModal(true);
@@ -121,7 +130,7 @@ const MakeComplaint = () => {
               <option value="IT Support">IT Support</option>
               <option value="Facilities">Facilities</option>
               <option value="Academics">Academics</option>
-              <option value="">Others</option>
+              <option value="Others">Others</option>
             </select>
           </label>
           <label className="block text-gray-700">
@@ -135,7 +144,7 @@ const MakeComplaint = () => {
             >
               <option value="Low">Low</option>
               <option value="Medium">Medium</option>
-              <option value="High">high</option>
+              <option value="High">High</option>
             </select>
           </label>
         </fieldset>
@@ -156,7 +165,7 @@ const MakeComplaint = () => {
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-3 mt-4 bg-dark-blue-600 text-white rounded-lg hover:bg-dark-blue-600 focus:outline-none focus:ring-2 focus:dark-blue-600"
+          className="w-full py-3 mt-4 bg-dark-blue-600 text-white rounded-lg hover:bg-dark-blue-600 focus:outline-none focus:ring-2 focus:ring-dark-blue-600"
         >
           {loading ? "Submitting..." : "Submit Complaint"}
         </button>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../index.css';
 import { db } from '../firebase';
+import { query, where } from 'firebase/firestore';
 import { collection, getDocs, updateDoc, doc } from 'firebase/firestore';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -22,41 +23,57 @@ const AdminDashboard = () => {
   const [filteredComplaints, setFilteredComplaints] = useState([]);
   const [filterCategory, setFilterCategory] = useState("");
   const [filterPriority, setFilterPriority] = useState("");
-  const [admin] = useState({
-    firstName: 'Admin',
-    lastName: 'User',
-    email: 'admin@example.com',
+  const [admin, setAdmin] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
     profilePhoto: AdminProfiePhoto,
   });
   const [feedbacks, setFeedbacks] = useState({});
   const [showSuggestions, setShowSuggestions] = useState(false);
 
   useEffect(() => {
-    const fetchComplaintsAndUsers = async () => {
-      const complaintsSnapshot = await getDocs(collection(db, "complaints"));
-      const complaintsList = [];
-      complaintsSnapshot.forEach((doc) => {
-        complaintsList.push({ id: doc.id, ...doc.data() });
-      });
-      setComplaints(complaintsList);
-      setFilteredComplaints(complaintsList);
+    const fetchData = async () => {
+      try {
+        // Fetch complaints
+        const complaintsSnapshot = await getDocs(collection(db, "complaints"));
+        const complaintsList = complaintsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setComplaints(complaintsList);
+        setFilteredComplaints(complaintsList);
 
-      const usersSnapshot = await getDocs(collection(db, "users"));
-      const usersList = {};
-      usersSnapshot.forEach((doc) => {
-        usersList[doc.id] = doc.data();
-      });
-      setUsers(usersList);
+        // Fetch users
+        const usersSnapshot = await getDocs(collection(db, "users"));
+        const usersList = {};
+        usersSnapshot.forEach((doc) => {
+          usersList[doc.id] = doc.data();
+        });
+        setUsers(usersList);
 
-      const suggestionsSnapshot = await getDocs(collection(db, "suggestions"));
-      const suggestionsList = [];
-      suggestionsSnapshot.forEach((doc) => {
-        suggestionsList.push({ id: doc.id, ...doc.data() });
-      });
-      setSuggestions(suggestionsList);
+        // Fetch admin details
+        const adminQuery = query(collection(db, "users"), where("role", "==", "admin"));
+        const adminSnapshot = await getDocs(adminQuery);
+        if (!adminSnapshot.empty) {
+          const adminData = adminSnapshot.docs[0].data(); // Assuming one admin
+          setAdmin({
+            firstName: adminData.firstName || '',
+            lastName: adminData.lastName || '',
+            email: adminData.email || '',
+            profilePhoto: adminData.profilePhoto || AdminProfiePhoto,
+          });
+        } else {
+          console.error("No admin found in the database.");
+        }
+
+        // Fetch suggestions
+        const suggestionsSnapshot = await getDocs(collection(db, "suggestions"));
+        const suggestionsList = suggestionsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setSuggestions(suggestionsList);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     };
 
-    fetchComplaintsAndUsers();
+    fetchData();
   }, []);
 
   const handleSearch = () => {
@@ -186,7 +203,7 @@ const AdminDashboard = () => {
     <div className="p-6 bg-gray-100 min-h-screen">
       {/* Header Section */}
       <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-        <div className="flex flex-wrap justify-between items-center mb-6">
+        <div className="flex flex-wrap justify-between items-center">
           <h1 className="text-2xl font-bold text-gray-800">Admin Dashboard</h1>
           <div className="flex items-center mt-4 sm:mt-0">
             <img

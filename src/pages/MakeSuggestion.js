@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { db } from "../firebase";
 import { collection, addDoc } from "firebase/firestore";
-import { useAuth } from "../context/AuthContext"; // Import useAuth
-import Modal from "../Modal"; // Import Modal component if it exists
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
+import Modal from "../Modal";
 
 const MakeSuggestion = () => {
-  const { currentUser } = useAuth(); // Access current user from context
-  const userId = currentUser ? currentUser.uid : null; // Get the user's UID
+  const { currentUser } = useAuth();
+  const userId = currentUser ? currentUser.uid : null;
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     title: "",
@@ -26,7 +28,10 @@ const MakeSuggestion = () => {
     });
   };
 
-  const closeModal = () => setShowModal(false);
+  const closeModal = () => {
+    setShowModal(false);
+    navigate("/studentdashboard"); // Redirect to dashboard
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -69,6 +74,8 @@ const MakeSuggestion = () => {
       setLoading(false);
     }
   };
+
+  
 
   return (
     <main className="min-h-screen bg-gradient-to-r from-yellow-50 to-blue-100 p-8">
