@@ -23,7 +23,6 @@ const AdminDashboard = () => {
   const [filteredComplaints, setFilteredComplaints] = useState([]);
   const [filterCategory, setFilterCategory] = useState("");
   const [filterPriority, setFilterPriority] = useState("");
-  const [filterUserType, setFilterUserType] = useState("");
   const [admin, setAdmin] = useState({
     firstName: '',
     lastName: '',
@@ -99,13 +98,6 @@ const AdminDashboard = () => {
   
     if (filterPriority) {
       filtered = filtered.filter(complaint => complaint.priority.toLowerCase() === filterPriority.toLowerCase());
-    }
-  
-    if (filterUserType) {
-      filtered = filtered.filter(complaint => {
-        const userType = users[complaint.userId]?.type; // Assuming userType is stored in users data
-        return userType?.toLowerCase() === filterUserType.toLowerCase();
-      });
     }
   
     setFilteredComplaints(filtered);
@@ -189,13 +181,19 @@ const AdminDashboard = () => {
     ],
   };
 
-  const chartDataRole = {
-    labels: ['Student', 'Faculty', 'Staff', 'Other'],
+  const categoryData = complaints.reduce((acc, complaint) => {
+    const category = complaint.category || 'Unknown';
+    acc[category] = (acc[category] || 0) + 1;
+    return acc;
+  }, {});
+
+  const chartDataCategory = {
+    labels: Object.keys(categoryData),
     datasets: [
       {
-        data: [5, 10, 3, 2],
-        backgroundColor: ['#FFB830', '#FF6384', '#36A2EB', '#FFCE56'],
-        hoverBackgroundColor: ['#FFB830', '#FF6384', '#36A2EB', '#FFCE56'],
+        data: Object.values(categoryData),
+        backgroundColor: ['#FFB830', '#FF6384', '#36A2EB', '#FFCE56', '#8A2BE2'],
+        hoverBackgroundColor: ['#FFB830', '#FF6384', '#36A2EB', '#FFCE56', '#8A2BE2'],
       },
     ],
   };
@@ -265,7 +263,7 @@ const AdminDashboard = () => {
     value={filterStatus}
     onChange={(e) => setFilterStatus(e.target.value)}
   >
-    <option value="">All Statuses</option>
+    <option value="">All Status</option>
     <option value="resolved">Resolved</option>
     <option value="unresolved">Unresolved</option>
   </select>
@@ -282,19 +280,6 @@ const AdminDashboard = () => {
             <option value="others">Others</option>
           </select>
 
-          <select
-  className="w-full p-2 border rounded mb-4"
-  value={filterUserType}
-  onChange={(e) => setFilterUserType(e.target.value)}
->
-  <option value="">Filter by Roles</option>
-  <option value="Student">Student</option>
-  <option value="Faculty">Faculty</option>
-  <option value="Staff">Staff</option>
-  <option value="Other">Other</option>
-</select>
-
-  
   <select
     className="w-full p-2 border rounded mb-4"
     value={filterPriority}
@@ -324,8 +309,8 @@ const AdminDashboard = () => {
               <Pie data={chartDataStatus} />
             </div>
             <div className="w-full sm:w-1/2 p-4 bg-gray-50 rounded-lg shadow">
-              <h4 className="text-lg font-semibold text-gray-800 mb-4">Role Distribution</h4>
-              <Pie data={chartDataRole} />
+              <h4 className="text-lg font-semibold text-gray-800 mb-4">Complaint Categories</h4>
+              <Pie data={chartDataCategory} />
             </div>
           </div>
         </div>
@@ -390,6 +375,7 @@ const AdminDashboard = () => {
                 <p><strong>Category:</strong> {complaint.category || 'Not specified'}</p>
                 <p><strong>Submitted On:</strong> {complaint.submittedOn || 'Invalid Date'}</p>
                 <p><strong>Submitted By:</strong> {users[complaint.userId] ? users[complaint.userId].email : 'Unknown'}</p>
+
                 <p>
                   <strong>Priority: </strong>
                   <span
@@ -444,7 +430,7 @@ const AdminDashboard = () => {
                 </button>
                 <button
                   onClick={() => handleToggleStatus(complaint.id, complaint.status)}
-                  className={`py-2 px-4 rounded mb-4 font-semibold sm:mb-0 text-black ${
+                  className={`py-2 px-4 rounded mb-4 font-semibold sm:mb-0 text-white ${
                     complaint.status === "resolved"
                       ? "bg-red-500 hover:bg-red-600"
                       : "bg-green-500 hover:bg-green-600"

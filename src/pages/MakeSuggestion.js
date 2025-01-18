@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { db } from "../firebase";
 import { collection, addDoc } from "firebase/firestore";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 import Modal from "../Modal";
 
 const MakeSuggestion = () => {
@@ -36,8 +36,21 @@ const MakeSuggestion = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Validate form fields
     if (!userId) {
       setModalMessage("You must be logged in to submit a suggestion.");
+      setShowModal(true);
+      return;
+    }
+
+    if (!formData.title) {
+      setModalMessage("Title is required.");
+      setShowModal(true);
+      return;
+    }
+
+    if (!formData.description) {
+      setModalMessage("Description is required.");
       setShowModal(true);
       return;
     }
@@ -74,8 +87,6 @@ const MakeSuggestion = () => {
       setLoading(false);
     }
   };
-
-  
 
   return (
     <main className="min-h-screen bg-gradient-to-r from-yellow-50 to-blue-100 p-8">

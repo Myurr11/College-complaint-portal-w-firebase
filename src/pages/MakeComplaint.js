@@ -32,6 +32,41 @@ const MakeComplaint = () => {
 
   const closeModal = () => setShowModal(false);
 
+  // Validation function for all fields
+  const validateFields = () => {
+    if (!formData.title || formData.title.trim() === "") {
+      setModalMessage("Please enter a valid title.");
+      setShowModal(true);
+      return false;
+    }
+
+    if (!formData.description || formData.description.trim() === "") {
+      setModalMessage("Please provide a description for the complaint.");
+      setShowModal(true);
+      return false;
+    }
+
+    if (!formData.category || formData.category === "") {
+      setModalMessage("Please select a category.");
+      setShowModal(true);
+      return false;
+    }
+
+    if (!formData.priority || formData.priority === "") {
+      setModalMessage("Please select a priority level.");
+      setShowModal(true);
+      return false;
+    }
+
+    if (!formData.agreement) {
+      setModalMessage("You must agree to the privacy policy.");
+      setShowModal(true);
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -41,10 +76,8 @@ const MakeComplaint = () => {
       return;
     }
 
-    if (!formData.agreement) {
-      setModalMessage("You must agree to the privacy policy.");
-      setShowModal(true);
-      return;
+    if (!validateFields()) {
+      return; // Exit if validation fails
     }
 
     setLoading(true);

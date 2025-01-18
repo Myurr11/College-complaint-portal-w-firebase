@@ -19,20 +19,57 @@ const SignUp = () => {
   const navigate = useNavigate();
 
   const handleSignUp = async () => {
+    const validateField = (value, message) => {
+      if (!value || value === "Select department" || value === "Select UserType") {
+        alert(message);
+        return false;
+      }
+      return true;
+    };
+  
+    const validateContactNumber = (contactNumber) => {
+      if (contactNumber.length !== 10 || isNaN(contactNumber)) {
+        alert("Please enter a valid 10-digit contact number.");
+        return false;
+      }
+      return true;
+    };
+  
+    const validateEmail = (email) => {
+      const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      if (!emailPattern.test(email)) {
+        alert("Please enter a valid email address.");
+        return false;
+      }
+      return true;
+    };
+  
+    if (
+      !validateField(formData.firstName, "Please enter your first name.") ||
+      !validateField(formData.lastName, "Please enter your last name.") ||
+      !validateField(formData.contactNumber, "Please enter your contact number.") ||
+      !validateField(formData.email, "Please enter your email.") ||
+      !validateField(formData.password, "Please enter your password.") ||
+      !validateField(formData.department, "Please select a department.") ||
+      !validateField(formData.userType, "Please select a user type.") ||
+      !validateContactNumber(formData.contactNumber) ||
+      !validateEmail(formData.email)
+    ) {
+      return; 
+    }
+  
     try {
       const { email, password, ...userData } = formData;
-
-      // Create the user in Firebase Authentication
+  
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-
-      // Save user data in Firestore
+  
       await setDoc(doc(db, "users", userCredential.user.uid), {
         ...userData,
         email: email,
         userId: userCredential.user.uid,
         userType: formData.userType.toLowerCase(),
       });
-
+  
       alert("SignUp Successful! Please log in.");
       navigate("/login");
     } catch (error) {
@@ -40,7 +77,7 @@ const SignUp = () => {
       alert(error.message);
     }
   };
-
+  
   return (
     <div
       className="relative flex justify-center items-center min-h-screen bg-cover bg-center"
@@ -125,7 +162,8 @@ const SignUp = () => {
               <ul className="list-disc ml-5">
                 <li>One uppercase letter ex. A,B</li>
                 <li>One lowercase letter ex. a,b</li>
-                <li>One unique character ex. #,@</li>
+                <li>One special character ex. #,@</li>
+                <li>One digit ex. 1,2</li>
               </ul>
             </small>
           </div>
@@ -159,6 +197,7 @@ const SignUp = () => {
               <option value="">Select UserType</option>
               <option value="student">Student</option>
               <option value="faculty">Faculty</option>
+              <option value="admin">Other</option>
             </select>
           </div>
 
