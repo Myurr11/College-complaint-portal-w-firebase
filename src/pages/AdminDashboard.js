@@ -23,6 +23,7 @@ const AdminDashboard = () => {
   const [filteredComplaints, setFilteredComplaints] = useState([]);
   const [filterCategory, setFilterCategory] = useState("");
   const [filterPriority, setFilterPriority] = useState("");
+  const [filterUserType, setFilterUserType] = useState("");
   const [admin, setAdmin] = useState({
     firstName: '',
     lastName: '',
@@ -91,7 +92,7 @@ const AdminDashboard = () => {
     }
   
     if (filterCategory) {
-      filtered = filtered.filter(complaint => 
+      filtered = filtered.filter(complaint =>
         complaint.category && complaint.category.toLowerCase() === filterCategory.toLowerCase()
       );
     }
@@ -100,8 +101,15 @@ const AdminDashboard = () => {
       filtered = filtered.filter(complaint => complaint.priority.toLowerCase() === filterPriority.toLowerCase());
     }
   
+    if (filterUserType) {
+      filtered = filtered.filter(complaint => {
+        const userType = users[complaint.userId]?.type; // Assuming userType is stored in users data
+        return userType?.toLowerCase() === filterUserType.toLowerCase();
+      });
+    }
+  
     setFilteredComplaints(filtered);
-  };
+  };  
   
   const handleToggleStatus = async (id, currentStatus) => {
     const complaintRef = doc(db, "complaints", id);
@@ -273,6 +281,19 @@ const AdminDashboard = () => {
             <option value="academics">Academics</option>
             <option value="others">Others</option>
           </select>
+
+          <select
+  className="w-full p-2 border rounded mb-4"
+  value={filterUserType}
+  onChange={(e) => setFilterUserType(e.target.value)}
+>
+  <option value="">Filter by Roles</option>
+  <option value="Student">Student</option>
+  <option value="Faculty">Faculty</option>
+  <option value="Staff">Staff</option>
+  <option value="Other">Other</option>
+</select>
+
   
   <select
     className="w-full p-2 border rounded mb-4"
