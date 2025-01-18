@@ -373,11 +373,11 @@ const AdminDashboard = () => {
                   <strong>Priority: </strong>
                   <span
                     className={`inline-block px-2 py-1 rounded text-white font-semibold ${
-                      complaint.priority === 'high'
+                      complaint.priority === 'High'
                         ? 'bg-red-500'
-                        : complaint.priority === 'medium'
+                        : complaint.priority === 'Medium'
                         ? 'bg-yellow-500'
-                        : complaint.priority === 'low'
+                        : complaint.priority === 'Low'
                         ? 'bg-green-500'
                         : 'bg-gray-300'
                     }`}
@@ -423,10 +423,10 @@ const AdminDashboard = () => {
                 </button>
                 <button
                   onClick={() => handleToggleStatus(complaint.id, complaint.status)}
-                  className={`py-2 px-4 rounded mb-4 sm:mb-0 text-white ${
+                  className={`py-2 px-4 rounded mb-4 font-semibold sm:mb-0 text-black ${
                     complaint.status === "resolved"
-                      ? "bg-red-500 hover:bg-red-700"
-                      : "bg-green-500 hover:bg-green-700"
+                      ? "bg-red-500 hover:bg-red-600"
+                      : "bg-green-500 hover:bg-green-600"
                   }`}
                 >
                   {complaint.status === "resolved" ? "Mark as Unresolved" : "Mark as Resolved"}
