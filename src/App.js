@@ -10,7 +10,7 @@ import MakeSuggestion from './pages/MakeSuggestion';
 import logo from './media/logo_campus.png';
 
 function App() {
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true); // Sidebar is collapsed by default
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true); 
   const location = useLocation();
 
   const toggleSidebar = () => {
@@ -18,9 +18,8 @@ function App() {
   };
 
   useEffect(() => {
-    // Reset sidebar state when navigating to Admin Dashboard
     if (location.pathname === "/admindashboard") {
-      setIsSidebarCollapsed(true); // Collapse sidebar for admin dashboard
+      setIsSidebarCollapsed(true);
     }
   }, [location]);
 
@@ -49,7 +48,7 @@ function App() {
       {location.pathname !== "/admindashboard" && (
         <Sidebar
           isSidebarCollapsed={isSidebarCollapsed}
-          setIsSidebarCollapsed={setIsSidebarCollapsed} // Pass setIsSidebarCollapsed here
+          setIsSidebarCollapsed={setIsSidebarCollapsed} 
           toggleSidebar={toggleSidebar}
         />
       )}
@@ -103,7 +102,7 @@ function Sidebar({ isSidebarCollapsed, setIsSidebarCollapsed, toggleSidebar }) {
     try {
       await logout();
       navigate('/');
-      setIsSidebarCollapsed(true); // Collapse sidebar after logout
+      setIsSidebarCollapsed(true); 
     } catch (error) {
       console.error('Logout failed:', error);
     }

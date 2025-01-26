@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 const MakeComplaint = () => {
   const { currentUser } = useAuth();
   const userId = currentUser ? currentUser.uid : null;
-  const navigate = useNavigate(); // Initialize navigate hook
+  const navigate = useNavigate(); 
 
   const [formData, setFormData] = useState({
     title: "",
@@ -32,7 +32,7 @@ const MakeComplaint = () => {
 
   const closeModal = () => setShowModal(false);
 
-  // Validation function for all fields
+  
   const validateFields = () => {
     if (!formData.title || formData.title.trim() === "") {
       setModalMessage("Please enter a valid title.");
@@ -77,7 +77,7 @@ const MakeComplaint = () => {
     }
 
     if (!validateFields()) {
-      return; // Exit if validation fails
+      return; 
     }
 
     setLoading(true);
@@ -97,7 +97,7 @@ const MakeComplaint = () => {
       setModalMessage("Complaint submitted successfully!");
       setShowModal(true);
 
-      // Reset form data
+      
       setFormData({
         title: "",
         description: "",
@@ -106,10 +106,10 @@ const MakeComplaint = () => {
         agreement: false,
       });
 
-      // Navigate back to the dashboard after a short delay
+      
       setTimeout(() => {
         setShowModal(false);
-        navigate("/studentdashboard"); // Redirect to dashboard
+        navigate("/studentdashboard"); 
       }, 2000);
     } catch (error) {
       setModalMessage("Error submitting complaint. Please try again.");
@@ -126,7 +126,7 @@ const MakeComplaint = () => {
         onSubmit={handleSubmit}
         className="bg-white p-8 rounded-lg shadow-2xl max-w-3xl mx-auto space-y-6"
       >
-        {/* Complaint Details */}
+        
         <fieldset className="space-y-4">
           <legend className="font-semibold text-xl text-gray-700 mb-4">Complaint Details</legend>
           <label className="block text-gray-700">
@@ -182,7 +182,7 @@ const MakeComplaint = () => {
           </label>
         </fieldset>
 
-        {/* Agreement */}
+        
         <label className="flex items-center space-x-2 text-gray-700">
           <input
             type="checkbox"
@@ -194,7 +194,7 @@ const MakeComplaint = () => {
           <span className="text-sm">I agree to the privacy policy.</span>
         </label>
 
-        {/* Submit Button */}
+        
         <button
           type="submit"
           disabled={loading}
@@ -204,7 +204,7 @@ const MakeComplaint = () => {
         </button>
       </form>
 
-      {/* Modal for Error/Success Messages */}
+      
       {showModal && <Modal message={modalMessage} onClose={closeModal} />}
     </main>
   );

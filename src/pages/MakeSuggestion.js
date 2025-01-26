@@ -30,13 +30,13 @@ const MakeSuggestion = () => {
 
   const closeModal = () => {
     setShowModal(false);
-    navigate("/studentdashboard"); // Redirect to dashboard
+    navigate("/studentdashboard"); 
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate form fields
+  
     if (!userId) {
       setModalMessage("You must be logged in to submit a suggestion.");
       setShowModal(true);
@@ -95,7 +95,7 @@ const MakeSuggestion = () => {
         onSubmit={handleSubmit}
         className="bg-white p-8 rounded-lg shadow-2xl max-w-3xl mx-auto space-y-6"
       >
-        {/* Suggestion Details */}
+        
         <fieldset className="space-y-4">
           <legend className="font-semibold text-xl text-gray-700 mb-4">Suggestion Details</legend>
           <label className="block text-gray-700">
@@ -121,7 +121,7 @@ const MakeSuggestion = () => {
           </label>
         </fieldset>
 
-        {/* Agreement */}
+        
         <label className="flex items-center space-x-2 text-gray-700">
           <input
             type="checkbox"
@@ -133,7 +133,7 @@ const MakeSuggestion = () => {
           <span className="text-sm">I agree to the privacy policy.</span>
         </label>
 
-        {/* Submit Button */}
+        
         <button
           type="submit"
           disabled={loading}
@@ -143,7 +143,7 @@ const MakeSuggestion = () => {
         </button>
       </form>
 
-      {/* Modal for Error/Success Messages */}
+      
       {showModal && <Modal message={modalMessage} onClose={closeModal} />}
     </main>
   );

@@ -2,16 +2,15 @@ import React, { useState, useEffect } from 'react';
 import '../index.css';
 import { db } from '../firebase';
 import { query, where } from 'firebase/firestore';
+import { getAuth } from "firebase/auth";
 import { collection, getDocs, updateDoc, doc } from 'firebase/firestore';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement } from 'chart.js';
-// eslint-disable-next-line
 import { Trash2 } from 'lucide-react';
 import AdminProfiePhoto from "../media/Admin_placeholder.jpg";
 
-// Register chart.js components
 ChartJS.register(Title, Tooltip, Legend, ArcElement);
 
 const AdminDashboard = () => {
@@ -35,13 +34,20 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch complaints
+      const auth = getAuth();
+      const user = auth.currentUser;
+      if (!user) {
+        toast.error("No user is logged in.");
+        return;
+      }
+
+      const loggedInEmail = user.email;
+
         const complaintsSnapshot = await getDocs(collection(db, "complaints"));
         const complaintsList = complaintsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         setComplaints(complaintsList);
         setFilteredComplaints(complaintsList);
 
-        // Fetch users
         const usersSnapshot = await getDocs(collection(db, "users"));
         const usersList = {};
         usersSnapshot.forEach((doc) => {
@@ -49,11 +55,10 @@ const AdminDashboard = () => {
         });
         setUsers(usersList);
 
-        // Fetch admin details
-        const adminQuery = query(collection(db, "users"), where("role", "==", "admin"));
+        const adminQuery = query(collection(db, "users"), where("email", "==", loggedInEmail), where("role", "==", "admin"));
         const adminSnapshot = await getDocs(adminQuery);
         if (!adminSnapshot.empty) {
-          const adminData = adminSnapshot.docs[0].data(); // Assuming one admin
+          const adminData = adminSnapshot.docs[0].data(); 
           setAdmin({
             firstName: adminData.firstName || '',
             lastName: adminData.lastName || '',
@@ -64,7 +69,6 @@ const AdminDashboard = () => {
           console.error("No admin found in the database.");
         }
 
-        // Fetch suggestions
         const suggestionsSnapshot = await getDocs(collection(db, "suggestions"));
         const suggestionsList = suggestionsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         setSuggestions(suggestionsList);
@@ -129,7 +133,6 @@ const AdminDashboard = () => {
 
       toast.success("Feedback deleted successfully!");
 
-      // Refresh complaints after feedback is deleted
       const querySnapshot = await getDocs(collection(db, "complaints"));
       const complaintsList = [];
       querySnapshot.forEach((doc) => {
@@ -149,14 +152,25 @@ const AdminDashboard = () => {
       return;
     }
 
-    const complaintRef = doc(db, "complaints", id);
-    await updateDoc(complaintRef, {
-      feedback: feedbacks[id],
-    });
 
-    toast.success("Feedback added successfully!");
+    try {
+      const complaintRef = doc(db, "complaints", id);
+      await updateDoc(complaintRef, {
+        feedback: feedbacks[id],
+      });
 
-    // Refresh complaints after feedback is added
+      toast.success("Feedback added successfully!");
+
+      // Clear the feedback input after submission
+      setFeedbacks((prevFeedbacks) => ({
+        ...prevFeedbacks,
+        [id]: "", // Clear the feedback for this complaint
+      }));
+    } catch (error) {
+      toast.error("Error adding feedback");
+      console.error("Error adding feedback:", error);
+    } 
+
     const querySnapshot = await getDocs(collection(db, "complaints"));
     const complaintsList = [];
     querySnapshot.forEach((doc) => {
@@ -293,10 +307,24 @@ const AdminDashboard = () => {
   
   <button
     onClick={handleSearch}
-    className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+    className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 mb-8"
   >
     Search
   </button>
+  <div className="flex justify-end">
+  <button
+    onClick={() => {
+      setSearchQuery("");
+      setFilterStatus("");
+      setFilterCategory("");
+      setFilterPriority("");
+      setFilteredComplaints(complaints);
+    }}
+    className="bg-gray-500 text-white text-sm py-1 px-2 rounded hover:bg-gray-600 ml-auto"
+  >
+    Reset Filters
+  </button>
+  </div>
 </div>
 
 
